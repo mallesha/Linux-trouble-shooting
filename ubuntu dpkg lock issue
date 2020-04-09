@@ -1,0 +1,30 @@
+While executing sudo apt upgrade most of the time it fails with follwoing error.
+We can fix the issue by following procedure, tried in ubuntu 18.04
+
+How to Fix ‘E: Could not get lock /var/lib/dpkg/lock’ Error in Ubuntu Linux
+==========================================================================
+
+check teh process running and kill them with -9
+
+ps aux | grep -i apt
+sudo kill -9 <process_id>
+
+Use the lsof command to get the process ID of the process holding the lock files. 
+Check the error and see what lock files it is complaining about and get the id of the processes holding these lock files.
+
+sudo lsof /var/lib/dpkg/lock
+sudo lsof /var/lib/apt/lists/lock
+sudo lsof /var/cache/apt/archives/lock
+
+
+You can now safely remove the lock files using the commands below:
+
+sudo rm /var/lib/apt/lists/lock
+sudo rm /var/cache/apt/archives/lock
+sudo rm /var/lib/dpkg/lock
+
+After that, reconfigure the packages:
+
+sudo dpkg --configure -a
+
+Now if you run the sudo apt update command, everything should be fine.
